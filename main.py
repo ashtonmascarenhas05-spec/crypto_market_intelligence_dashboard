@@ -42,7 +42,7 @@ def main():
         first_coin = final_data[0]
         name = first_coin['name']
         price = first_coin['market_data']['current_price']['usd']
-        print(f"Sample Data -> {name} is currently trading at ${price}")
+        print(f"Sample Data is -> {name} is currently trading at ${price}")
     print("TEST IS SUCCESSFUL!")
 if __name__ == "__main__":
     main()
