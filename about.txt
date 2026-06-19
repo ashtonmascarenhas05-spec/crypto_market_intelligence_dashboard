@@ -1,1 +1,1 @@
-This project is Market_Intelligence_Dashboard
+This project is Market Intelligence Dashboard. This gives the updates and live graphical insights of the market trends.
