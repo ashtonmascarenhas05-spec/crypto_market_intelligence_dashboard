@@ -1,1 +1,11 @@
-This project is Market Intelligence Dashboard. This gives the updates and live graphical insights of the market trends.
+This project is Market Intelligence Dashboard. 
+This gives the updates and live graphical insights of the market trends.
+Following API's shall be used:
+        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1",
+        "https://api.coingecko.com/api/v3/coins/bitcoin",
+        "https://api.coingecko.com/api/v3/coins/ethereum",
+        "https://api.coingecko.com/api/v3/global",
+        "https://api.coingecko.com/api/v3/search/trending",
+        "https://open.er-api.com/v6/latest/USD",
+        "https://jsonplaceholder.typicode.com/posts",
+        "https://bored-api.appbrewery.com/random"
