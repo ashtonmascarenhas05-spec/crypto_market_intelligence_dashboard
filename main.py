@@ -7,11 +7,17 @@ def main():
 
     # 1. The Fuel (URLs)
     # We use three identical endpoints for different coins so the JSON structure matches.
-    crypto_urls = [
+    crypto_urls = [ ## Added the APIs that are gonna be used.
+        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1",
         "https://api.coingecko.com/api/v3/coins/bitcoin",
         "https://api.coingecko.com/api/v3/coins/ethereum",
-        "https://api.coingecko.com/api/v3/coins/solana"
+        "https://api.coingecko.com/api/v3/global",
+        "https://api.coingecko.com/api/v3/search/trending",
+        "https://open.er-api.com/v6/latest/USD",
+        "https://jsonplaceholder.typicode.com/posts",
+        "https://bored-api.appbrewery.com/random"
     ]
+
 
     # 2. The Configuration
     headers = {"User-Agent": "AshtonMarketDashboard/1.0"}
