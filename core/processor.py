@@ -32,4 +32,3 @@ class DataProcessor:
     def stream_rows(self):
         for row in self.df.itertuples(index=False):
             yield row   
-        
