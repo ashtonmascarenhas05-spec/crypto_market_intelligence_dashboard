@@ -1,4 +1,5 @@
 from core.scraper import ScraperEngine
+from core.processor import DataProcessor
 
 
 ## let's test the scraper engine with the CoinGecko API, which is a popular and free cryptocurrency data provider. We will fetch data for three coins: Bitcoin, Ethereum, and Solana. The expected keys in the response will be 'id', 'symbol', 'name', and 'market_data' to ensure we have the necessary information for our dashboard.    
@@ -38,17 +39,35 @@ def main():
     )
 
     # 4. Fire the Engine
-    final_data = engine.fetch_all()
+    raw_data = engine.fetch_all()
 
     # 5. Check the Payload
-    print(f"\nScraping complete! Successfully retrieved {len(final_data)} valid records.")
+    print(f"\n[1/3] Scraping complete! Successfully retrieved {len(raw_data)} valid records.")
     
     # Optional: Print the name and current price of the first coin to prove it worked
-    if len(final_data) > 0:
-        first_coin = final_data[0]
-        name = first_coin['name']
-        price = first_coin['market_data']['current_price']['usd']
-        print(f"Sample Data is -> {name} is currently trading at ${price}")
+    if len(raw_data) > 0:
+        print(f"\n[2/3] Pass {len(raw_data)} raw records into the Processor....")
+
+        ## Instantiate the processor with raw data
+        processor = DataProcessor(raw_data)
+
+        # Running pipeline methods
+        processor.clean_data()
+        processor.add_features()
+
+        print("\n[3/3] Streaming modified data from Generator:")
+        print("-"*50)
+
+        #trigger the generator for one row at a time
+        for row in processor.stream_rows():
+            print(row)
+        print("-" * 50)
+        print("Pipeline Execution Complete.")
+        
+    else:
+        print("\nPipeline stopped. No valid data was fetched from the APIs.")
+
+        
     print("TEST IS SUCCESSFUL!")
 if __name__ == "__main__":
     main()
