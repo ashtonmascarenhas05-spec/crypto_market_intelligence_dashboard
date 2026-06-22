@@ -6,9 +6,28 @@ class DataProcessor:
         self.raw_data = raw_data  # class receives a list of dictionaries from the scraper
         self.df = None   # we will store our clean dataframe here
     def clean_data(self):
-        df = pd.DataFrame(self.raw_data)     #It shall read the raw_data into a Pandas DataFrame
-        df.fillna(0)          ## It fill the missing values with value 0
-        df['TimeStamp'] = pd.Timestamp.now()    # Adding a TimeStamp
+        # 1. Create an empty list to hold our flat, clean dictionaries
+        flat_data = []
+        
+        # 2. Dig into the messy raw data and extract ONLY what we need
+        for item in self.raw_data:
+            try:
+                flat_record = {
+                    'coin': item.get('name', 'Unknown'),
+                    'price': item['market_data']['current_price']['usd'] # Digging deep for the price!
+                }
+                flat_data.append(flat_record)
+            except KeyError:
+                # If a record failed or is missing this structure, skip it gracefully
+                continue
+
+        # 3. NOW we convert our perfectly flat list into a DataFrame
+        df = pd.DataFrame(flat_data)     
+        
+        # 4. Standardize and Timestamp
+        df = df.fillna(0)                     
+        df['timestamp'] = pd.Timestamp.now()  
+        
         self.df = df
     def add_features(self):
         df = self.df
