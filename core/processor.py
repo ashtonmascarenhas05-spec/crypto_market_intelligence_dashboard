@@ -31,4 +31,4 @@ class DataProcessor:
     # A generator that yields one row of the dataframe at a time
     def stream_rows(self):
         for row in self.df.itertuples(index=False):
-            yield row   
+            yield row
