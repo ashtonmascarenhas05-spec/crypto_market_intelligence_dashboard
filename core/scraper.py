@@ -30,7 +30,7 @@ class ScraperEngine:
             return f"Error fetching data from {url}: {str(e)}"
         
     def fetch_all(self):
-        with ThreadPoolExecutor(max_workers= 3) as executor:
+        with ThreadPoolExecutor(max_workers= 1) as executor:
             status_messages = list(executor.map(self.fetch_single, self.base_urls))
             for message in status_messages:
                 print(message)

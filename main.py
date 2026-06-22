@@ -23,7 +23,7 @@ def main():
     # 2. The Configuration
     headers = {"User-Agent": "AshtonMarketDashboard/1.0"}
     timeout_seconds = 10
-    rate_limit_seconds = 1.5  # CoinGecko is strict, so we give it 1.5 seconds to breathe
+    rate_limit_seconds = 3  # CoinGecko is strict, so we give it 1.5 seconds to breathe
     
     # These are the keys we expect in every CoinGecko response
     expected_keys = ['id', 'symbol', 'name', 'market_data']
