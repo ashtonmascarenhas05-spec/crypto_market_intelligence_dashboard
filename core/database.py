@@ -24,3 +24,19 @@ class DatabaseManager:
         cursor.execute(schema_query)
         conn.commit()
         conn.close()
+    
+    def insert_row(self, row):
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+
+        # Notice the question marks! These are secure placeholders.
+        insert_query = """
+        INSERT INTO crypto_data (coin, price, timestamp, log_price, normalized_price)
+        VALUES (?, ?, ?, ?, ?)
+        """
+
+        # We pass the exact values from your Pandas tuple to fill in the question marks
+        # (row.coin, row.price, str(row.timestamp), row.log_price, row.normalized_price)
+        
+        # --- YOUR TURN TO FINISH THIS ---
+        # How do you execute the query, commit the changes, and close the connection?
