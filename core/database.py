@@ -1,8 +1,9 @@
 import sqlite3
 import os
+import pandas as pd
 
 class DatabaseManager:
-    def __init__(self, db_name = "market_db"):
+    def __init__(self, db_name = "market_db.db"):
         current_dir = os.path.dirname(os.path.abspath(__file__))
         project_root = os.path.dirname(current_dir)
         self.db_name = os.path.join(project_root, db_name)
@@ -41,11 +42,16 @@ class DatabaseManager:
 
         # We pass the exact values from your Pandas tuple to fill in the question marks
         # (row.coin, row.price, str(row.timestamp), row.log_price, row.normalized_price)
-        self.row = row
         # --- YOUR TURN TO FINISH THIS ---
         # How do you execute the query, commit the changes, and close the connection?
         cursor.execute(insert_query, (row.coin,row.price,str(row.timestamp),row.log_price,row.normalized_price))
         conn.commit()
         conn.close()
+    
+    def fetch_all_data(self):
+        conn = sqlite3.connect(self.db_name)
+        df = pd.read_sql_query("SELECT * FROM crypto _data",conn)
+        conn.close()
+        return df
 
     

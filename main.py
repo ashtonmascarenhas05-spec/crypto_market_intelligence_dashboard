@@ -10,14 +10,9 @@ def main():
     # 1. The Fuel (URLs)
     # We use three identical endpoints for different coins so the JSON structure matches.
     crypto_urls = [ ## Added the APIs that are gonna be used.
-        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1",
         "https://api.coingecko.com/api/v3/coins/bitcoin",
         "https://api.coingecko.com/api/v3/coins/ethereum",
-        "https://api.coingecko.com/api/v3/global",
-        "https://api.coingecko.com/api/v3/search/trending",
-        "https://open.er-api.com/v6/latest/USD",
-        "https://jsonplaceholder.typicode.com/posts",
-        "https://bored-api.appbrewery.com/random"
+        "https://api.coingecko.com/api/v3/coins/solana"
     ]
 
 
@@ -60,9 +55,12 @@ def main():
         print("-"*50)
         db = DatabaseManager()
         #trigger the generator for one row at a time
+        saved_count = 0
         for row in processor.stream_rows():
-            print(row)
             db.insert_row(row)
+            print(f"Saved to DB: {row.coin} | Price: ${row.price}")
+            saved_count += 1
+        print(f"Total rows saved to database: {saved_count}")
         print("-" * 50)
         print("Pipeline Execution Complete.")
         

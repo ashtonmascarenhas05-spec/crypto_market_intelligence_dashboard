@@ -30,6 +30,8 @@ class DataProcessor:
         
         self.df = df
     def add_features(self):
+        if not hasattr(self,'df') or self.df is None:
+            print("Error: DataFrame is empty. Please run clean_data() first")
         df = self.df
         
         # Safe Logarithm, If price is greater than 0, calculate log. Otherwise, set to 0.
