@@ -1,8 +1,12 @@
 import sqlite3
+import os
 
 class DatabaseManager:
     def __init__(self, db_name = "market_db"):
-        self.db_name = db_name
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(current_dir)
+        self.db_name = os.path.join(project_root, db_name)
+        print(f"[DEBUG] Database Manager intializing at: {self.db_name}")
         self.create_table()
 
     def create_table(self):
