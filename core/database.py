@@ -37,10 +37,10 @@ class DatabaseManager:
 
         # We pass the exact values from your Pandas tuple to fill in the question marks
         # (row.coin, row.price, str(row.timestamp), row.log_price, row.normalized_price)
-        
+        self.row = row
         # --- YOUR TURN TO FINISH THIS ---
         # How do you execute the query, commit the changes, and close the connection?
-        cursor.execute(insert_query)
+        cursor.execute(insert_query, (row.coin,row.price,str(row.timestamp),row.log_price,row.normalized_price))
         conn.commit()
         conn.close()
 
