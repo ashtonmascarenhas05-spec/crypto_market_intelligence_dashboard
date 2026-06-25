@@ -1,5 +1,6 @@
 from core.scraper import ScraperEngine
 from core.processor import DataProcessor
+from core.database import DatabaseManager
 
 
 ## let's test the scraper engine with the CoinGecko API, which is a popular and free cryptocurrency data provider. We will fetch data for three coins: Bitcoin, Ethereum, and Solana. The expected keys in the response will be 'id', 'symbol', 'name', and 'market_data' to ensure we have the necessary information for our dashboard.    
@@ -57,10 +58,11 @@ def main():
 
         print("\n[3/3] Streaming modified data from Generator:")
         print("-"*50)
-
+        db = DatabaseManager()
         #trigger the generator for one row at a time
         for row in processor.stream_rows():
             print(row)
+            db.insert_row(row)
         print("-" * 50)
         print("Pipeline Execution Complete.")
         
