@@ -2,80 +2,45 @@ import streamlit as st
 import sqlite3
 import pandas as pd
 import os
-import matplotlib.pyplot as plt
+import plotly.express as px
 
-# Page Config
-st.set_page_config(page_title="Crypto ETL", layout="wide")
-st.title("⚡ Crypto ETL: Live Market Pipeline")
+## Page Configuration
 
-# 1. The Data Loader (Protected by Cache)
-@st.cache_data
+st.set_page_config(page_title="Crypto ETL Engine",page_icon="⚡",layout = "wide")
+st.title("Live Market Intelligence Dashboard")
+st.markdown("Automated multithreaded ETL pipeline tracking real-time cryptocurrency")
+
+## The Data Pipeline
+@st.cache_data(ttl=60)  # Automatically refreshes cache every 60 seconds!
 def load_data():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(current_dir)
-    db_path = os.path.join(project_root, "market_db.db")
-    
+    db_path = os.path.join(project_root,"market_db.db")
     conn = sqlite3.connect(db_path)
-    df = pd.read_sql("SELECT * FROM crypto_data", conn)
+    ## Reading the database into a DataFrame
+    df = pd.read_sql("SELECT * FROM crypto_data",conn)
+
     conn.close()
+
+    #Converting the timestamp string back to actual datatime objects for Plotly
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
     return df
 
-# Fetch the Data
 df = load_data()
 
-# 2. Build the UI
+## Dashboard UI
+
 if not df.empty:
-    st.success(f"Pipeline Active: Successfully loaded {len(df)} records.")
-    
-    # --- SIDEBAR FILTER ---
-    st.sidebar.header("Dashboard Controls")
-    # Get unique coins and add a dropdown
+    st.sidebar.header("PIPELINE CONTROLS")
+    st.sidebar.success(f"Database Active: {len(df)} total rows")
+    #number of unique coins
     unique_coins = df['coin'].unique()
-    selected_coin = st.sidebar.selectbox("Select Asset", unique_coins)
-    
-    # Filter the dataframe based on the user's selection
-    filtered_df = df[df['coin'] == selected_coin]
+    selected_coin = st.sidebar.selectbox("Target Asset",unique_coins)
+    #Filtering the dataframe
+    asset_df = df[df['coin'] == selected_coin].copy()
 
-    # --- RAW DATA TABLE ---
-    st.subheader("🗄️ Raw Database Feed")
-    st.dataframe(df, use_container_width=True)
+    #Get the most recent data point for the KPI cards
 
-    # --- STATISTICS SECTION ---
-    st.subheader(f"📊 {selected_coin} Statistics")
-    
-    # Using Streamlit columns to put metrics side-by-side
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        # Calculate Variance
-        price_variance = filtered_df['price'].var()
-        st.metric(label="Price Variance", value=round(price_variance, 2) if pd.notna(price_variance) else "N/A")
-        
-    with col2:
-        # Show Correlation Matrix between raw price and log price
-        st.write("Correlation: Price vs Log Price")
-        corr_matrix = filtered_df[['price', 'log_price']].corr()
-        st.dataframe(corr_matrix)
+    st.markdown(f"### {selected_coin}")
 
-    # --- TIME SERIES CHART ---
-    st.subheader(f"📈 {selected_coin} Price History")
-    
-    # Create the Matplotlib figure
-    fig, ax = plt.subplots(figsize=(10, 4))
-    ax.plot(filtered_df['timestamp'], filtered_df['price'], label='Raw Price', color='#1f77b4', marker='o')
-    
-    # Add rolling average (will only show if you have > 1 row for the coin!)
-    ax.plot(filtered_df['timestamp'], filtered_df['price'].rolling(window=2).mean(), label='2-Period Rolling Avg', color='#ff7f0e', linestyle='--')
-    
-    ax.set_title(f"{selected_coin} Price Over Time")
-    ax.set_xlabel("Timestamp")
-    ax.set_ylabel("Price (USD)")
-    # Rotate the x-axis labels so the timestamps don't overlap
-    plt.xticks(rotation=45)
-    ax.legend()
-    
-    # Render the plot in Streamlit
-    st.pyplot(fig)
 
-else:
-    st.warning("The database is currently empty. Run main.py to fetch data!")
