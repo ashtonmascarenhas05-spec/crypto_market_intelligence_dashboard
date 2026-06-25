@@ -40,3 +40,8 @@ class DatabaseManager:
         
         # --- YOUR TURN TO FINISH THIS ---
         # How do you execute the query, commit the changes, and close the connection?
+        cursor.execute(insert_query)
+        conn.commit()
+        conn.close()
+
+    
