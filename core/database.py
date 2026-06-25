@@ -56,17 +56,16 @@ class DatabaseManager:
         return df
 
     ## I want to export the rows into csv as well
-    def append_to_csv(row,filename="crypto_dataset.csv"):
-        # Checking if the file exists or not
+    def append_to_csv(self, data_dict, filename="crypto_dataset.csv"):
         file_exists = os.path.isfile(filename)
-
-        with open(filename,"a",newline="") as file:
-            writer = csv.DictWriter(file,fieldnames=row._fields)
-            #If file is new, header will be written
+        
+        with open(filename, "a", newline="") as file:
+            writer = csv.DictWriter(file, fieldnames=data_dict.keys())
+            
             if not file_exists:
                 writer.writeheader()
-            #Convert the row to dictionary and write
-            writer.writerow(row._asdict())
+                
+            writer.writerow(data_dict)
 
 
     

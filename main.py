@@ -58,11 +58,25 @@ def main():
         saved_count = 0
         for row in processor.stream_rows():
             db.insert_row(row)
-            db.append_to_csv(row)
+            
             print(f"Saved to DB: {row.coin} | Price: ${row.price}")
             saved_count += 1
+        
+        insert_count = 0
+        for row in processor.stream_rows():
+            db.insert_row(row)
+            
+            # Convert row to a plain dictionary based on its structure
+            # If row is a NamedTuple/object,I'll use row._asdict()
+            # If row is a Pandas series, I'll use row.to_dict()
+            data_to_save = row.to_dict() if hasattr(row, 'to_dict') else row._asdict()
+            
+            db.append_to_csv(data_dict=data_to_save, filename="crypto_dataset.csv")
+            print(f"Saved: {data_to_save['coin']}")
+            insert_count+=1
+
         print(f"Total rows saved to database: {saved_count}")
-        print(f"Total rows saved to dataset: {saved_count - 129}")
+        print(f"Total rows saved to dataset: {insert_count}")
         print("-" * 50)
         print("Pipeline Execution Complete.")
         

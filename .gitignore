@@ -10,3 +10,6 @@ env/
 # Database files
 *.db
 *.sqlite3
+
+#csv files
+*.csv
