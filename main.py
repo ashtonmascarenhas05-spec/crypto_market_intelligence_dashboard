@@ -62,6 +62,7 @@ def main():
             print(f"Saved to DB: {row.coin} | Price: ${row.price}")
             saved_count += 1
         print(f"Total rows saved to database: {saved_count}")
+        print(f"Total rows saved to dataset: {saved_count - 129}")
         print("-" * 50)
         print("Pipeline Execution Complete.")
         
