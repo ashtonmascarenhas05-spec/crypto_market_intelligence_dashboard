@@ -58,6 +58,7 @@ def main():
         saved_count = 0
         for row in processor.stream_rows():
             db.insert_row(row)
+            db.append_to_csv(row)
             print(f"Saved to DB: {row.coin} | Price: ${row.price}")
             saved_count += 1
         print(f"Total rows saved to database: {saved_count}")

@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import csv
 import pandas as pd
 
 class DatabaseManager:
@@ -53,5 +54,19 @@ class DatabaseManager:
         df = pd.read_sql_query("SELECT * FROM crypto _data",conn)
         conn.close()
         return df
+
+    ## I want to export the rows into csv as well
+    def append_to_csv(row,filename="crypto_dataset.csv"):
+        # Checking if the file exists or not
+        file_exists = os.path.isfile(filename)
+
+        with open(filename,"a",newline="") as file:
+            writer = csv.DictWriter(file,fieldnames=row._fields)
+            #If file is new, header will be written
+            if not file_exists:
+                writer.writeheader()
+            #Convert the row to dictionary and write
+            writer.writerow(row._asdict())
+
 
     
