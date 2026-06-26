@@ -1,6 +1,7 @@
 from core.scraper import ScraperEngine
 from core.processor import DataProcessor
 from core.database import DatabaseManager
+from utils.logger import setup_logger
 
 
 ## let's test the scraper engine with the CoinGecko API, which is a popular and free cryptocurrency data provider. We will fetch data for three coins: Bitcoin, Ethereum, and Solana. The expected keys in the response will be 'id', 'symbol', 'name', and 'market_data' to ensure we have the necessary information for our dashboard.    
@@ -83,6 +84,16 @@ def main():
     else:
         print("\nPipeline stopped. No valid data was fetched from the APIs.")
 
+    logger = setup_logger()
+
+    logger.info("Initializing Market Intelligence Dashboard...")
+
+    logger.warning("CoinGecko API is getting slow, increasing wait time...")
+
+    try:
+        pass
+    except Exception as e:
+        logger.error(f"Pipeline failed: {e}")
         
     print("TEST IS SUCCESSFUL!")
 if __name__ == "__main__":
