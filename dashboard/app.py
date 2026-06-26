@@ -28,19 +28,45 @@ def load_data():
 
 df = load_data()
 
-## Dashboard UI
+#Sidebar Navigation
 
-if not df.empty:
-    st.sidebar.header("PIPELINE CONTROLS")
-    st.sidebar.success(f"Database Active: {len(df)} total rows")
-    #number of unique coins
-    unique_coins = df['coin'].unique()
-    selected_coin = st.sidebar.selectbox("Target Asset",unique_coins)
-    #Filtering the dataframe
-    asset_df = df[df['coin'] == selected_coin].copy()
+st.sidebar.title("Navigation")
+page = st.sidebar.radio("Go to",["Introduction","Dashboard","Tabular Display"])
+st.sidebar.markdown("---")
+st.sidebar.metric("Active Data Points",len(df))
 
-    #Get the most recent data point for the KPI cards
+# Page Logic
 
-    st.markdown(f"### {selected_coin}")
+if page == "Introduction":
+    st.title("About this Project")
+    st.write("### Purpose")
+    st.write("This dashboard visualizes real-time crypto market data captured via an automated ETL Pipeline")
+    st.info(" DISCLAIMER:This project is strictly for educational purposes. ")
+
+elif page == "Dashboard":
+    st.title("Crypto Analytics Dashboard")
 
 
+    # KPI Cards
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Assets Tracked",len(df['coin'].unique()))
+    btc_data = df[df['coin']=='bitcoin']
+    if not btc_data.empty:
+        latest_btc_price = btc_data['price'].iloc[-1]
+        col2.metric("Latest Price (BTC)",f"${latest_btc_price:,.2f}")
+    else:
+        col2.metric("Latest Price (BTC)","No Data")
+
+    # Visuals
+    st.subheader("Price Trends")
+    fig = px.line(df,x='timestamp',y='price',color='coin')
+    st.plotly_chart(fig,use_container_width=True)
+
+    #Comparison Chart
+    st.subheader("Market Composition")
+    fig_pie = px.pie(df,values='price',names='coin',title="Price Distribution")
+    st.plotly_chart(fig_pie)
+
+elif page == "Tabular Display":
+    st.title("Raw Database Feed")
+    st.dataframe(df, use_container_width=True)
