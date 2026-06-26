@@ -81,5 +81,5 @@ elif page == "Dashboard":
         st.plotly_chart(fig, width='stretch')
 
 elif page == "Tabular Display":
-    st.title("Raw Database Feed")
-    st.dataframe(df, width='stretch')
+    st.title("Tabular Feed for last One Hour")
+    st.dataframe(df.tail(15), width='stretch')
