@@ -8,7 +8,7 @@ from utils.logger import setup_logger
 def main():
     print("Initializing Market Intelligence Dashboard...")
 
-    # 1. The Fuel (URLs)
+    # The Fuel (URLs)
     # We use three identical endpoints for different coins so the JSON structure matches.
     crypto_urls = [ ## Added the APIs that are gonna be used.
         "https://api.coingecko.com/api/v3/coins/bitcoin",
@@ -17,7 +17,7 @@ def main():
     ]
 
 
-    # 2. The Configuration
+    # The Configuration
     headers = {"User-Agent": "AshtonMarketDashboard/1.0"}
     timeout_seconds = 10
     rate_limit_seconds = 3  # CoinGecko is strict, so we give it 1.5 seconds to breathe
@@ -25,7 +25,7 @@ def main():
     # These are the keys we expect in every CoinGecko response
     expected_keys = ['id', 'symbol', 'name', 'market_data']
 
-    # 3. Instantiate the Engine
+    # Instantiate the Engine
     print("Starting Scraper Engine...")
     engine = ScraperEngine(
         base_urls=crypto_urls,
@@ -35,10 +35,10 @@ def main():
         expected_keys=expected_keys
     )
 
-    # 4. Fire the Engine
+    # Fire the Engine
     raw_data = engine.fetch_all()
 
-    # 5. Check the Payload
+    # Check the Payload
     print(f"\n[1/3] Scraping complete! Successfully retrieved {len(raw_data)} valid records.")
     
     # Optional: Print the name and current price of the first coin to prove it worked
