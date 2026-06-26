@@ -7,7 +7,7 @@ import plotly.express as px
 ## Page Configuration
 
 st.set_page_config(page_title="Crypto ETL Engine",page_icon="⚡",layout = "wide")
-st.title("Live Market Intelligence Dashboard")
+st.title("Market Intelligence Dashboard")
 st.markdown("Automated multithreaded ETL pipeline tracking real-time cryptocurrency")
 
 ## The Data Pipeline
@@ -45,28 +45,41 @@ if page == "Introduction":
 
 elif page == "Dashboard":
     st.title("Crypto Analytics Dashboard")
+    
+    # 1. KPI Cards (Summary)
+    st.subheader("Market Overview")
+    cols = st.columns(len(df['coin'].unique()))
+    for i, coin in enumerate(df['coin'].unique()):
+        latest_price = df[df['coin'] == coin]['price'].iloc[-1]
+        cols[i].metric(f"{coin.upper()} Price", f"${latest_price:,.2f}")
 
+    st.divider()
 
-    # KPI Cards
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Assets Tracked",len(df['coin'].unique()))
-    btc_data = df[df['coin']=='bitcoin']
-    if not btc_data.empty:
-        latest_btc_price = btc_data['price'].iloc[-1]
-        col2.metric("Latest Price (BTC)",f"${latest_btc_price:,.2f}")
-    else:
-        col2.metric("Latest Price (BTC)","No Data")
-
-    # Visuals
-    st.subheader("Price Trends")
-    fig = px.line(df,x='timestamp',y='price',color='coin')
-    st.plotly_chart(fig,use_container_width=True)
-
-    #Comparison Chart
-    st.subheader("Market Composition")
-    fig_pie = px.pie(df,values='price',names='coin',title="Price Distribution")
-    st.plotly_chart(fig_pie)
+    # 2. Individual Line Charts (One for each coin)
+    st.subheader("Price Trends per Asset")
+    
+    # Loop through each unique coin and create a chart
+    for coin in df['coin'].unique():
+        st.markdown(f"### {coin.upper()} Performance")
+        
+        # Filter for the specific coin
+        coin_df = df[df['coin'] == coin].sort_values('timestamp')
+        
+        # Create the chart
+        fig = px.line(
+            coin_df, 
+            x='timestamp', 
+            y='price', 
+            title=f"{coin.upper()} Live Price Trend",
+            markers=True
+        )
+        # Add a rolling average for depth
+        coin_df['Rolling_Avg'] = coin_df['price'].rolling(window=3).mean()
+        fig.add_scatter(x=coin_df['timestamp'], y=coin_df['Rolling_Avg'], mode='lines', name='3-Tick Trend', line=dict(color='orange', dash='dot'))
+        
+        # Render the specific chart
+        st.plotly_chart(fig, width='stretch')
 
 elif page == "Tabular Display":
     st.title("Raw Database Feed")
-    st.dataframe(df, use_container_width=True)
+    st.dataframe(df, width='stretch')
